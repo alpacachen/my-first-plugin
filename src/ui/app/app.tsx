@@ -1,29 +1,20 @@
 import { useEffect, useState } from 'react'
 import './app.css'
-
+import { ResizeButton } from './resize-button';
+import { RenderView } from './render-view';
 function App() {
-  const [count, setCount] = useState(5)
-  const onCancel = () => {
-    parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-  }
-
-  const onCreate = () => {
-    parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
-  }
-
   useEffect(() => {
     window.addEventListener('message', (event) => {
       console.log(event.data.pluginMessage);
     });
   }, []);
+  const [width, setWidth] = useState(150)
 
   return (
-    <>
-      <h2>Rectange Creator</h2>
-      <p>Count: <input id="count" type="number" value={count} onChange={(e) => setCount(Number(e.target.value))} /></p>
-      <button onClick={onCreate}>Create</button>
-      <button onClick={onCancel}>Cancel</button>
-    </>
+    <div className='relative h-full w-full'>
+      <RenderView width={width} />
+      <ResizeButton setWidth={setWidth} />
+    </div>
   )
 }
 
