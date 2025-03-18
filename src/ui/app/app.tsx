@@ -1,14 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './app.css'
 import { ResizeButton } from './resize-button';
 import { RenderView } from './render-view';
 function App() {
-  useEffect(() => {
-    window.addEventListener('message', (event) => {
-      console.log(event.data.pluginMessage);
-    });
-  }, []);
-  const [width, setWidth] = useState(150)
+  const [width, setWidth] = useState(490)
 
   return (
     <div className='relative h-full w-full'>
