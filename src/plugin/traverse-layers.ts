@@ -1,4 +1,4 @@
-import { DIV } from "./div";
+import { DIV } from "./rules/util/div";
 import { convertBackgroundColor } from "./rules/background-color";
 import { convertHeight } from "./rules/height";
 import { convertOpacity } from "./rules/opacity";
@@ -12,6 +12,7 @@ import { getTextSegments, styleToString, TextSegment } from "./rules/util";
 import { convertTextColor } from "./rules/text/color";
 import { convertFontSize } from "./rules/text/font-size";
 import { convertFontWeight } from "./rules/text/font-weight";
+import { Img } from "./rules/util/image";
 
 const generateStyle = (layer: SceneNode) => {
     return Object.assign(
@@ -37,23 +38,30 @@ const generateTextStyle = (segment: TextSegment) => {
     )
 }
 
-export function traverseLayer(layer: SceneNode) {
-    const div = new DIV()
+export async function traverseLayer(layer: SceneNode) {
     if (layer.type == 'TEXT') {
+        const div = new DIV()
         const segments = getTextSegments(layer)
         const textString = segments.map(segment => {
             const style = generateTextStyle(segment)
             return `<span style="${styleToString(style)}">${segment.characters}</span>`
         }).join('')
         div.addText(textString)
+        return div
+    } else if (layer.type == 'STAR' || layer.type == 'ELLIPSE' || layer.type == 'POLYGON' || layer.type == 'VECTOR') {
+        const image = new Img(await layer.exportAsync({
+            format: 'PNG',
+        }))
+        return image
     } else {
+        const div = new DIV()
         if ('children' in layer) {
             for (const child of layer.children) {
-                const childDiv = traverseLayer(child)
+                const childDiv = await traverseLayer(child)
                 div.addChild(childDiv)
             }
         }
         div.addStyle(generateStyle(layer))
+        return div
     }
-    return div
 }
