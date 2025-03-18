@@ -1,5 +1,5 @@
 import { CSSProperties } from "react"
-import { filterVisibleEffect, RGBAtoRGBA } from "./util"
+import { filterVisibleEffect, rgbaToRGBA } from "./util"
 
 export const convertBoxShadow = (layer: SceneNode): CSSProperties => {
     if (!('effects' in layer)) {
@@ -12,9 +12,9 @@ export const convertBoxShadow = (layer: SceneNode): CSSProperties => {
     let code = ''
     for (const effect of effects) {
         if (effect.type === 'DROP_SHADOW') {
-            code += `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${RGBAtoRGBA(effect.color)},`
+            code += `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${rgbaToRGBA(effect.color)},`
         } else if (effect.type === 'INNER_SHADOW') {
-            code += `inset ${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${RGBAtoRGBA(effect.color)},`
+            code += `inset ${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread}px ${rgbaToRGBA(effect.color)},`
         }
     }
     if (code.length > 0) {

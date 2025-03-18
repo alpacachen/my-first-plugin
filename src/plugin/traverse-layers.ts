@@ -8,22 +8,52 @@ import { convertTransform } from "./rules/transform";
 import { convertBorderWidth } from "./rules/border-width";
 import { convertBorderColor } from "./rules/border-color";
 import { convertBoxShadow } from "./rules/box-shadow";
+import { getTextSegments, styleToString, TextSegment } from "./rules/util";
+import { convertTextColor } from "./rules/text/color";
+import { convertFontSize } from "./rules/text/font-size";
+import { convertFontWeight } from "./rules/text/font-weight";
+
+const generateStyle = (layer: SceneNode) => {
+    return Object.assign(
+        {},
+        convertWidth(layer),
+        convertHeight(layer),
+        convertBackgroundColor(layer),
+        convertOpacity(layer),
+        convertBorderRadius(layer),
+        convertTransform(layer),
+        convertBorderWidth(layer),
+        convertBorderColor(layer),
+        convertBoxShadow(layer),
+    )
+}
+
+const generateTextStyle = (segment: TextSegment) => {
+    return Object.assign(
+        {},
+        convertTextColor(segment),
+        convertFontSize(segment),
+        convertFontWeight(segment),
+    )
+}
+
 export function traverseLayer(layer: SceneNode) {
     const div = new DIV()
-    div.addStyle(convertWidth(layer))
-    div.addStyle(convertHeight(layer))
-    div.addStyle(convertBackgroundColor(layer))
-    div.addStyle(convertOpacity(layer))
-    div.addStyle(convertBorderRadius(layer))
-    div.addStyle(convertTransform(layer))
-    div.addStyle(convertBorderWidth(layer))
-    div.addStyle(convertBorderColor(layer))
-    div.addStyle(convertBoxShadow(layer))
-    if ('children' in layer) {
-        for (const child of layer.children) {
-            const childDiv = traverseLayer(child)
-            div.addChild(childDiv)
+    if (layer.type == 'TEXT') {
+        const segments = getTextSegments(layer)
+        const textString = segments.map(segment => {
+            const style = generateTextStyle(segment)
+            return `<span style="${styleToString(style)}">${segment.characters}</span>`
+        }).join('')
+        div.addText(textString)
+    } else {
+        if ('children' in layer) {
+            for (const child of layer.children) {
+                const childDiv = traverseLayer(child)
+                div.addChild(childDiv)
+            }
         }
+        div.addStyle(generateStyle(layer))
     }
     return div
 }
