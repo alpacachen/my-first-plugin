@@ -1,5 +1,12 @@
+import { CSSProperties } from "react";
+import { styleToString } from ".";
+
 export class Img {
-    constructor(private imageData: Uint8Array) {
+    private style: CSSProperties = {}
+    constructor(private imageData: Uint8Array) { }
+
+    addStyle(style: CSSProperties) {
+        this.style = style
     }
 
     private uint8ArrayToBase64(uint8Array: Uint8Array): string {
@@ -29,6 +36,6 @@ export class Img {
 
     render() {
         const base64 = this.uint8ArrayToBase64(this.imageData);
-        return `<img src="data:image/png;base64,${base64}" />`;
+        return `<img src="data:image/png;base64,${base64}" style="${styleToString(this.style)}" />`;
     }
 }

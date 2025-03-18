@@ -13,7 +13,9 @@ import { convertTextColor } from "./rules/text/color";
 import { convertFontSize } from "./rules/text/font-size";
 import { convertFontWeight } from "./rules/text/font-weight";
 import { Img } from "./rules/util/image";
-
+import { convertPosition } from "./rules/position";
+import { convertLeft } from "./rules/left";
+import { convertTop } from "./rules/top";
 const generateStyle = (layer: SceneNode) => {
     return Object.assign(
         {},
@@ -26,6 +28,9 @@ const generateStyle = (layer: SceneNode) => {
         convertBorderWidth(layer),
         convertBorderColor(layer),
         convertBoxShadow(layer),
+        convertPosition(layer),
+        convertLeft(layer),
+        convertTop(layer),
     )
 }
 
@@ -35,6 +40,15 @@ const generateTextStyle = (segment: TextSegment) => {
         convertTextColor(segment),
         convertFontSize(segment),
         convertFontWeight(segment),
+    )
+}
+
+const generateImageStyle = (layer: SceneNode) => {
+    return Object.assign(
+        {},
+        convertPosition(layer),
+        convertLeft(layer),
+        convertTop(layer),
     )
 }
 
@@ -52,6 +66,7 @@ export async function traverseLayer(layer: SceneNode) {
         const image = new Img(await layer.exportAsync({
             format: 'PNG',
         }))
+        image.addStyle(generateImageStyle(layer))
         return image
     } else {
         const div = new DIV()
