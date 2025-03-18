@@ -16,7 +16,8 @@ import { Img } from "./rules/util/image";
 import { convertPosition } from "./rules/position";
 import { convertLeft } from "./rules/left";
 import { convertTop } from "./rules/top";
-const generateStyle = (layer: SceneNode) => {
+import { convertPadding } from "./rules/padding";
+const generateStyle = (layer: SceneNode, topParentId: string) => {
     return Object.assign(
         {},
         convertWidth(layer),
@@ -29,8 +30,9 @@ const generateStyle = (layer: SceneNode) => {
         convertBorderColor(layer),
         convertBoxShadow(layer),
         convertPosition(layer),
-        convertLeft(layer),
-        convertTop(layer),
+        convertLeft(layer, topParentId),
+        convertTop(layer, topParentId),
+        convertPadding(layer),
     )
 }
 
@@ -43,16 +45,16 @@ const generateTextStyle = (segment: TextSegment) => {
     )
 }
 
-const generateImageStyle = (layer: SceneNode) => {
+const generateImageStyle = (layer: SceneNode, topParentId: string) => {
     return Object.assign(
         {},
         convertPosition(layer),
-        convertLeft(layer),
-        convertTop(layer),
+        convertLeft(layer, topParentId),
+        convertTop(layer, topParentId),
     )
 }
 
-export async function traverseLayer(layer: SceneNode) {
+export async function traverseLayer(layer: SceneNode, topParentId: string) {
     if (layer.type == 'TEXT') {
         const div = new DIV()
         const segments = getTextSegments(layer)
@@ -66,17 +68,17 @@ export async function traverseLayer(layer: SceneNode) {
         const image = new Img(await layer.exportAsync({
             format: 'PNG',
         }))
-        image.addStyle(generateImageStyle(layer))
+        image.addStyle(generateImageStyle(layer, topParentId))
         return image
     } else {
         const div = new DIV()
         if ('children' in layer) {
             for (const child of layer.children) {
-                const childDiv = await traverseLayer(child)
+                const childDiv = await traverseLayer(child, topParentId)
                 div.addChild(childDiv)
             }
         }
-        div.addStyle(generateStyle(layer))
+        div.addStyle(generateStyle(layer, topParentId))
         return div
     }
 }
