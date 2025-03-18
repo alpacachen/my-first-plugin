@@ -19,6 +19,12 @@ import { convertTop } from "./rules/top";
 import { convertPadding } from "./rules/padding";
 import { convertGap } from "./rules/gap";
 import { convertDisplay } from "./rules/display";
+import { convertFlexDirection } from "./rules/flex-direction";
+import { convertLineHeight } from "./rules/text/line-height";
+import { convertTextAlign } from "./rules/text/text-algin";
+import { convertAlignItems } from "./rules/aligin-items";
+import { convertJustifyContent } from "./rules/justify-content";
+import { convertOverflow } from "./rules/overflow";
 const generateStyle = (layer: SceneNode, topParentId: string) => {
     return Object.assign(
         {},
@@ -37,6 +43,10 @@ const generateStyle = (layer: SceneNode, topParentId: string) => {
         convertPadding(layer),
         convertGap(layer),
         convertDisplay(layer),
+        convertFlexDirection(layer),
+        convertAlignItems(layer),
+        convertJustifyContent(layer),
+        convertOverflow(layer),
     )
 }
 
@@ -46,9 +56,21 @@ const generateTextStyle = (segment: TextSegment) => {
         convertTextColor(segment),
         convertFontSize(segment),
         convertFontWeight(segment),
+        convertLineHeight(segment),
     )
 }
 
+const generateTextContainerStyle = (layer: SceneNode, topParentId: string) => {
+    return Object.assign(
+        {},
+        convertLeft(layer, topParentId),
+        convertTop(layer, topParentId),
+        convertPosition(layer),
+        convertWidth(layer),
+        convertHeight(layer),
+        convertTextAlign(layer),
+    )
+}
 const generateImageStyle = (layer: SceneNode, topParentId: string) => {
     return Object.assign(
         {},
@@ -67,13 +89,15 @@ export async function traverseLayer(layer: SceneNode, topParentId: string) {
         const segments = getTextSegments(layer)
         const textString = segments.map(segment => {
             const style = generateTextStyle(segment)
-            return `<span style="${styleToString(style)}">${segment.characters}</span>`
+            return `<span style="${styleToString(style)}">${segment.characters.replace(/\n/g, '<br />')}</span>`
         }).join('')
         div.addText(textString)
+        div.addStyle(generateTextContainerStyle(layer, topParentId))
         return div
-    } else if (layer.type == 'STAR' || layer.type == 'ELLIPSE' || layer.type == 'POLYGON' || layer.type == 'VECTOR' || hasImageFill(layer)) {
+    } else if (layer.type == 'BOOLEAN_OPERATION' || layer.type == 'STAR' || layer.type == 'ELLIPSE' || layer.type == 'POLYGON' || layer.type == 'VECTOR' || hasImageFill(layer)) {
         const image = new Img(await layer.exportAsync({
             format: 'PNG',
+            useAbsoluteBounds: true,
         }))
         image.addStyle(generateImageStyle(layer, topParentId))
         return image

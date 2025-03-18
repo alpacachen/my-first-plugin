@@ -22,7 +22,7 @@ export const rgbaToRGBA = (rgba: RGBA) => {
 }
 
 export const getTextSegments = (layer: TextNode) => {
-    return layer.getStyledTextSegments(['fills', 'fontSize', 'fontWeight'])
+    return layer.getStyledTextSegments(['fills', 'fontSize', 'fontWeight', 'lineHeight'])
 }
 
 export type TextSegment = ReturnType<typeof getTextSegments>[number]
