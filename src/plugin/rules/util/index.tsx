@@ -34,3 +34,25 @@ export const camelToDash = (str: string) => {
 export const styleToString = (style: CSSProperties) => {
     return Object.entries(style).map(([key, value]) => `${camelToDash(key)}: ${value}`).join('; ')
 }
+
+export const hasImageFill = (layer: SceneNode) => {
+    if ('fills' in layer && layer.fills !== figma.mixed) {
+        return filterVisiabelPaints(layer.fills).filter((fill) => fill.type === 'IMAGE').length > 0
+    }
+    return false
+}
+
+export const isAutoLayout = (layer: BaseNode) => {
+    if ('layoutMode' in layer) {
+        return layer.layoutMode !== 'NONE'
+    }
+    return false
+}
+
+// 子图层中有 mask 就直接生成图片
+export const childrenHasMask = (layer: SceneNode) => {
+    if ('children' in layer) {
+        return layer.children.some((child) => 'isMask' in child && child.isMask)
+    }
+    return false
+}

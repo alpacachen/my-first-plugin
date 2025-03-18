@@ -1,9 +1,8 @@
+import { isAutoLayout } from "./util"
+
 export const convertPadding = (layer: SceneNode) => {
     // 只有自动布局才展示padding
-    if (!('layoutMode' in layer)) {
-        return {}
-    }
-    if (layer.layoutMode == 'NONE') {
+    if (!isAutoLayout(layer)) {
         return {}
     }
     if ('paddingTop' in layer) {

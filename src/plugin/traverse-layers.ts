@@ -8,7 +8,7 @@ import { convertTransform } from "./rules/transform";
 import { convertBorderWidth } from "./rules/border-width";
 import { convertBorderColor } from "./rules/border-color";
 import { convertBoxShadow } from "./rules/box-shadow";
-import { getTextSegments, styleToString, TextSegment } from "./rules/util";
+import { childrenHasMask, getTextSegments, hasImageFill, styleToString, TextSegment } from "./rules/util";
 import { convertTextColor } from "./rules/text/color";
 import { convertFontSize } from "./rules/text/font-size";
 import { convertFontWeight } from "./rules/text/font-weight";
@@ -17,6 +17,8 @@ import { convertPosition } from "./rules/position";
 import { convertLeft } from "./rules/left";
 import { convertTop } from "./rules/top";
 import { convertPadding } from "./rules/padding";
+import { convertGap } from "./rules/gap";
+import { convertDisplay } from "./rules/display";
 const generateStyle = (layer: SceneNode, topParentId: string) => {
     return Object.assign(
         {},
@@ -33,6 +35,8 @@ const generateStyle = (layer: SceneNode, topParentId: string) => {
         convertLeft(layer, topParentId),
         convertTop(layer, topParentId),
         convertPadding(layer),
+        convertGap(layer),
+        convertDisplay(layer),
     )
 }
 
@@ -55,6 +59,9 @@ const generateImageStyle = (layer: SceneNode, topParentId: string) => {
 }
 
 export async function traverseLayer(layer: SceneNode, topParentId: string) {
+    if (!layer.visible) {
+        return null
+    }
     if (layer.type == 'TEXT') {
         const div = new DIV()
         const segments = getTextSegments(layer)
@@ -64,7 +71,7 @@ export async function traverseLayer(layer: SceneNode, topParentId: string) {
         }).join('')
         div.addText(textString)
         return div
-    } else if (layer.type == 'STAR' || layer.type == 'ELLIPSE' || layer.type == 'POLYGON' || layer.type == 'VECTOR') {
+    } else if (layer.type == 'STAR' || layer.type == 'ELLIPSE' || layer.type == 'POLYGON' || layer.type == 'VECTOR' || hasImageFill(layer)) {
         const image = new Img(await layer.exportAsync({
             format: 'PNG',
         }))
@@ -73,9 +80,17 @@ export async function traverseLayer(layer: SceneNode, topParentId: string) {
     } else {
         const div = new DIV()
         if ('children' in layer) {
-            for (const child of layer.children) {
-                const childDiv = await traverseLayer(child, topParentId)
-                div.addChild(childDiv)
+            if (childrenHasMask(layer)) {
+                const image = new Img(await layer.exportAsync({
+                    format: 'PNG',
+                }))
+                image.addStyle(generateImageStyle(layer, topParentId))
+                return image
+            } else {
+                for (const child of layer.children) {
+                    const childDiv = await traverseLayer(child, topParentId)
+                    div.addChild(childDiv)
+                }
             }
         }
         div.addStyle(generateStyle(layer, topParentId))
