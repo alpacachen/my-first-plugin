@@ -56,3 +56,10 @@ export const childrenHasMask = (layer: SceneNode) => {
     }
     return false
 }
+
+export const strokeAvailable = (layer: SceneNode) => {
+    if ('strokes' in layer) {
+        return filterVisibleSolidPaints(layer.strokes).length > 0
+    }
+    return false
+}
