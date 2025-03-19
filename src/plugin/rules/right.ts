@@ -8,27 +8,31 @@ export const convertRight = (layer: SceneNode, leftParentId: string, parent: Sce
         return {}
     }
     const constraints = layer.constraints.horizontal
+    const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
+    const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
+    if (!parentAbsoluteBoundingBox) {
+        return {}
+    }
+    if (!layerAbsoluteBoundingBox) {
+        return {}
+    }
+    const right = parentAbsoluteBoundingBox.x + parentAbsoluteBoundingBox.width - (layerAbsoluteBoundingBox.x + layerAbsoluteBoundingBox.width)
+
     switch (constraints) {
         case 'CENTER':
         case 'STRETCH':
         case 'MAX': {
-            const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
-            const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
             return {
-                right: (layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0) + 'px',
+                right: right + 'px',
             }
         }
         case 'SCALE': {
-            const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
-            const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
             return {
-                right: (((layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0)) / (parent?.width || 1)) * 100 + '%',
+                right: (right / parentAbsoluteBoundingBox.width) * 100 + '%',
             }
         }
         case 'MIN': {
             return {}
         }
     }
-    // figma 绝对定位是起点不带边框，但是 html 带
-
 }
