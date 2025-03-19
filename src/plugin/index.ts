@@ -7,9 +7,9 @@ figma.ui.resize(500, 500);
 figma.on('selectionchange', async () => {
   const selection = figma.currentPage.selection;
   if (selection.length == 1) {
-    const div = await traverseLayer(selection[0], selection[0].id)
+    const div = await traverseLayer(selection[0], selection[0].id, null)
     const nodeWidth = selection[0].width
-    const zoom = nodeWidth / 490
+    const zoom = nodeWidth / 400
     sendMessageFromPlugin({
       type: 'html',
       data: div?.render() || '',

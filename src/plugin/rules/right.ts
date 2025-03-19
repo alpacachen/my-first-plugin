@@ -1,6 +1,6 @@
 import { getLayerAbsoluteRenderBounds } from "./util"
 
-export const convertLeft = (layer: SceneNode, leftParentId: string, parent: SceneNode | null) => {
+export const convertRight = (layer: SceneNode, leftParentId: string, parent: SceneNode | null) => {
     if (layer.id === leftParentId) {
         return {}
     }
@@ -11,21 +11,21 @@ export const convertLeft = (layer: SceneNode, leftParentId: string, parent: Scen
     switch (constraints) {
         case 'CENTER':
         case 'STRETCH':
-        case 'MIN': {
+        case 'MAX': {
             const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
             const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
             return {
-                left: (layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0) + 'px',
+                right: (layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0) + 'px',
             }
         }
         case 'SCALE': {
             const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
             const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
             return {
-                left: (((layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0)) / (parent?.width || 1)) * 100 + '%',
+                right: (((layerAbsoluteBoundingBox?.x || 0) - (parentAbsoluteBoundingBox?.x || 0)) / (parent?.width || 1)) * 100 + '%',
             }
         }
-        case 'MAX': {
+        case 'MIN': {
             return {}
         }
     }

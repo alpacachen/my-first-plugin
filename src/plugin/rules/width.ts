@@ -2,9 +2,22 @@ import { CSSProperties } from "react"
 import { getLayerAbsoluteRenderBounds } from "./util"
 
 export const convertWidth = (layer: SceneNode): CSSProperties => {
-    const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
-    if (layerAbsoluteBoundingBox?.width) {
-        return { width: layerAbsoluteBoundingBox.width + 'px' }
+    if (!('constraints' in layer)) {
+        return {}
     }
-    return {}
+    const constraints = layer.constraints.horizontal
+    switch (constraints) {
+        case 'MIN':
+        case 'MAX': {
+            const layerAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(layer)
+            if (layerAbsoluteBoundingBox?.width) {
+                return { width: layerAbsoluteBoundingBox.width + 'px' }
+            }
+            return {}
+        }
+        case 'CENTER':
+        case 'STRETCH':
+        case 'SCALE':
+            return {}
+    }
 }

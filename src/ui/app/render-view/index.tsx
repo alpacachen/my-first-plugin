@@ -1,9 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { MessageFromPlugin } from "../../../common/message";
 
-export const RenderView: FC<{
-    width: number
-}> = ({ width }) => {
+export const RenderView: FC = () => {
     const [html, setHtml] = useState('')
     const [zoom, setZoom] = useState(1)
     useEffect(() => {
@@ -15,9 +13,7 @@ export const RenderView: FC<{
             }
         })
     }, [])
-    return <div className="w-full p-1 box-border flex h-full justify-center">
-        <div style={{ width: width }} className="h-8/9 ring-1 ring-gray-200 rounded-lg">
-            <div dangerouslySetInnerHTML={{ __html: html }} style={{ zoom: 1/zoom }} />
-        </div>
+    return <div className="w-full p-1 box-border flex h-full justify-center bg-mosaic">
+        <div dangerouslySetInnerHTML={{ __html: html }} className="w-full" style={{ zoom: 1 / zoom }} />
     </div>
 }

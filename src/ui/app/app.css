@@ -3,3 +3,16 @@
   box-sizing: border-box;
 }
 @import "tailwindcss";
+
+.bg-mosaic {
+  background-image: linear-gradient(
+      45deg,
+      rgba(204, 204, 204, 0.5) 25%,
+      transparent 25%
+    ),
+    linear-gradient(-45deg, rgba(204, 204, 204, 0.5) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(204, 204, 204, 0.5) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(204, 204, 204, 0.5) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 0, 10px -10px, 0px 10px;
+}

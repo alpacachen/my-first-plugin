@@ -1,6 +1,11 @@
 import { isAutoLayout } from "./util"
 
-export const convertPosition = (layer: SceneNode) => {
+export const convertPosition = (layer: SceneNode, topParentId: string) => {
+    if (layer.id === topParentId) {
+        return {
+            position: 'relative' as const
+        }
+    }
     // 如果有父元素，那么一定是 absolute
     if ('parent' in layer && layer.parent !== null) {
         // 如果父元素是 autolayout，那么就不设置绝对定位

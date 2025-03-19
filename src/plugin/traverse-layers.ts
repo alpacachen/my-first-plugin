@@ -25,6 +25,7 @@ import { convertTextAlign } from "./rules/text/text-algin";
 import { convertAlignItems } from "./rules/aligin-items";
 import { convertJustifyContent } from "./rules/justify-content";
 import { convertOverflow } from "./rules/overflow";
+import { convertRight } from "./rules/right";
 const generateStyle = (layer: SceneNode, topParentId: string, parent: SceneNode | null) => {
     return Object.assign(
         {},
@@ -37,8 +38,9 @@ const generateStyle = (layer: SceneNode, topParentId: string, parent: SceneNode 
         convertBorderWidth(layer),
         convertBorderColor(layer),
         convertBoxShadow(layer),
-        convertPosition(layer),
+        convertPosition(layer, topParentId),
         convertLeft(layer, topParentId, parent),
+        convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
         convertPadding(layer),
         convertGap(layer),
@@ -64,8 +66,9 @@ const generateTextContainerStyle = (layer: SceneNode, topParentId: string, paren
     return Object.assign(
         {},
         convertLeft(layer, topParentId, parent),
+        convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
-        convertPosition(layer),
+        convertPosition(layer, topParentId),
         convertWidth(layer),
         convertHeight(layer),
         convertTextAlign(layer),
@@ -74,8 +77,9 @@ const generateTextContainerStyle = (layer: SceneNode, topParentId: string, paren
 const generateImageStyle = (layer: SceneNode, topParentId: string, parent: SceneNode | null) => {
     return Object.assign(
         {},
-        convertPosition(layer),
+        convertPosition(layer, topParentId),
         convertLeft(layer, topParentId, parent),
+        convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
         convertBoxShadow(layer),
     )
