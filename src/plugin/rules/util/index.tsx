@@ -63,3 +63,10 @@ export const strokeAvailable = (layer: SceneNode) => {
     }
     return false
 }
+
+export const getLayerAbsoluteRenderBounds = (layer: SceneNode | null) => {
+    if (layer && 'absoluteRenderBounds' in layer) {
+        return layer.absoluteRenderBounds
+    }
+    return null
+}
