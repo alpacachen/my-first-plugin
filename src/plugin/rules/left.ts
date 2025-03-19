@@ -1,8 +1,8 @@
-export const convertLeft = (layer: SceneNode, leftParentId: string) => {
+export const convertLeft = (layer: SceneNode, leftParentId: string, parent: SceneNode | null) => {
     if (layer.id === leftParentId) {
         return {}
     }
     return {
-        left: layer.x + 'px',
+        left: (layer.absoluteBoundingBox?.x || 0) - (parent?.absoluteBoundingBox?.x || 0) + 'px',
     }
 }
