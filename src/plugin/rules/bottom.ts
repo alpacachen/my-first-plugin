@@ -1,7 +1,7 @@
 import { getLayerAbsoluteRenderBounds } from "./util"
 
-export const convertTop = (layer: SceneNode, topParentId: string, parent: SceneNode | null) => {
-    if (layer.id === topParentId) {
+export const convertBottom = (layer: SceneNode, TopParentId: string, parent: SceneNode | null) => {
+    if (layer.id === TopParentId) {
         return {}
     }
     const parentAbsoluteBoundingBox = getLayerAbsoluteRenderBounds(parent)
@@ -15,20 +15,20 @@ export const convertTop = (layer: SceneNode, topParentId: string, parent: SceneN
     if (!('constraints' in layer)) {
         return {}
     }
-    const top = layerAbsoluteBoundingBox.y - parentAbsoluteBoundingBox.y
+    const bottom = parentAbsoluteBoundingBox.y + parentAbsoluteBoundingBox.height - (layerAbsoluteBoundingBox.y + layerAbsoluteBoundingBox.height)
     const constraints = layer.constraints.vertical
     switch (constraints) {
-        case 'MIN':
+        case 'MAX':
         case 'CENTER':
         case 'STRETCH':
             return {
-                top: top + 'px',
+                bottom: bottom + 'px',
             }
         case 'SCALE':
             return {
-                top: (top / parentAbsoluteBoundingBox.height) * 100 + '%',
+                bottom: (bottom / parentAbsoluteBoundingBox.height) * 100 + '%',
             }
-        case 'MAX':
+        case 'MIN':
             return {}
     }
 }

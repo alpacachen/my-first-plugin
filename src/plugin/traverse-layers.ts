@@ -26,6 +26,7 @@ import { convertAlignItems } from "./rules/aligin-items";
 import { convertJustifyContent } from "./rules/justify-content";
 import { convertOverflow } from "./rules/overflow";
 import { convertRight } from "./rules/right";
+import { convertBottom } from "./rules/bottom";
 const generateStyle = (layer: SceneNode, topParentId: string, parent: SceneNode | null) => {
     return Object.assign(
         {},
@@ -42,6 +43,7 @@ const generateStyle = (layer: SceneNode, topParentId: string, parent: SceneNode 
         convertLeft(layer, topParentId, parent),
         convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
+        convertBottom(layer, topParentId, parent),
         convertPadding(layer),
         convertGap(layer),
         convertDisplay(layer, parent),
@@ -68,6 +70,7 @@ const generateTextContainerStyle = (layer: SceneNode, topParentId: string, paren
         convertLeft(layer, topParentId, parent),
         convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
+        convertBottom(layer, topParentId, parent),
         convertPosition(layer, topParentId),
         convertWidth(layer),
         convertHeight(layer),
@@ -81,6 +84,7 @@ const generateImageStyle = (layer: SceneNode, topParentId: string, parent: Scene
         convertLeft(layer, topParentId, parent),
         convertRight(layer, topParentId, parent),
         convertTop(layer, topParentId, parent),
+        convertBottom(layer, topParentId, parent),
         convertBoxShadow(layer),
     )
 }
